@@ -20,7 +20,7 @@ grid on
 % compose the optimization problem
 %----------------------------------------------
 % CasADi v3.4.5
-addpath('C:\Users\mehre\OneDrive\Desktop\CasADi\casadi-windows-matlabR2016a-v3.4.5')
+addpath('C:\Matlab Toolboxes\tbxmanager\toolboxes\casadi-windows-matlabR2016a-v3.5.1');
 import casadi.*
  
 m = SX.sym('m'); % Decision variable (slope)
