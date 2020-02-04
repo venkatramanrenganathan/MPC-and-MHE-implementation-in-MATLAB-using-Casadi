@@ -1,4 +1,4 @@
-function Draw_MPC_point_stabilization_v1 (t,xx,xx1,u_cl,xs,N,rob_diam)
+function Draw_MPC_tracking_v1 (t,xx,xx1,u_cl,xs,N,rob_diam)
 
 
 set(0,'DefaultAxesFontName', 'Times New Roman')
