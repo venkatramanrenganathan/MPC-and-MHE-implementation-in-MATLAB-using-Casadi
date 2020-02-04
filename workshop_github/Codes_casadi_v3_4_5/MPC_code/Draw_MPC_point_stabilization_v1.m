@@ -28,9 +28,14 @@ set(gcf, 'Color', 'w');
 set(gcf,'Units','normalized','OuterPosition',[0 0 0.55 1]);
 
 for k = 1:size(xx,2)
-    h_t = 0.14; w_t=0.09; % triangle parameters
     
-    x1 = xs(1); y1 = xs(2); th1 = xs(3);
+    % triangle parameters
+    h_t = 0.14; 
+    w_t = 0.09; 
+    
+    x1  = xs(1);
+    y1  = xs(2); 
+    th1 = xs(3);
     x1_tri = [ x1+h_t*cos(th1), x1+(w_t/2)*cos((pi/2)-th1), x1-(w_t/2)*cos((pi/2)-th1)];%,x1+(h_t/3)*cos(th1)];
     y1_tri = [ y1+h_t*sin(th1), y1-(w_t/2)*sin((pi/2)-th1), y1+(w_t/2)*sin((pi/2)-th1)];%,y1+(h_t/3)*sin(th1)];
     fill(x1_tri, y1_tri, 'g'); % plot reference state
