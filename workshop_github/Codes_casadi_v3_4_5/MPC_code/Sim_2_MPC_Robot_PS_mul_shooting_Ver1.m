@@ -6,7 +6,7 @@ addpath('C:\Matlab Toolboxes\tbxmanager\toolboxes\casadi-windows-matlabR2016a-v3
 import casadi.*
 
 T    = 0.2; % Time step[s]
-N    = 100; % prediction horizon
+N    = 10; % prediction horizon
 rDia = 0.3; % Robot diameter 
 
 % Input Constraints
@@ -35,7 +35,7 @@ n_controls = length(controls);
 % Define the Nonlinear state equation
 rhs = [v*cos(theta);v*sin(theta);omega]; 
 
-% Monlinear State Update function f(x,u)
+% Nonlinear State Update function f(x,u)
 % Given states and controls as input, returns rhs in terms of the inputs
 f = Function('f',{states,controls},{rhs}); 
 
@@ -81,10 +81,10 @@ nlp_prob = struct('f', obj, 'x', OPT_variables, 'g', g, 'p', P);
 
 % Feed the solver options
 opts = struct;
-opts.ipopt.max_iter = 2000;
-opts.ipopt.print_level =0;%0,3
-opts.print_time = 0;
-opts.ipopt.acceptable_tol =1e-8;
+opts.ipopt.max_iter                  = 2000;
+opts.ipopt.print_level               = 0;%0,3
+opts.print_time                      = 0;
+opts.ipopt.acceptable_tol            = 1e-8;
 opts.ipopt.acceptable_obj_change_tol = 1e-6;
 
 % Call the solver ipopt with problem struct and options
@@ -94,16 +94,16 @@ solver = nlpsol('solver', 'ipopt', nlp_prob,opts);
 args = struct;
 
 % Dynamics Constraint
-args.lbg(1:3*(N+1)) = 0;  % -1e-20  % Equality constraints
-args.ubg(1:3*(N+1)) = 0;  % 1e-20   % Equality constraints
+args.lbg(1:3*(N+1)) = 0;  % -1e-20 - Equality constraints
+args.ubg(1:3*(N+1)) = 0;  % 1e-20  - Equality constraints
 
 % State Constraints
-args.lbx(1:3:3*(N+1),1) = -2; %state x lower bound
-args.ubx(1:3:3*(N+1),1) = 2; %state x upper bound
-args.lbx(2:3:3*(N+1),1) = -2; %state y lower bound
-args.ubx(2:3:3*(N+1),1) = 2; %state y upper bound
-args.lbx(3:3:3*(N+1),1) = -inf; %state theta lower bound
-args.ubx(3:3:3*(N+1),1) = inf; %state theta upper bound
+args.lbx(1:3:3*(N+1),1) = -2;   % state x lower bound
+args.ubx(1:3:3*(N+1),1) = 2;    % state x upper bound
+args.lbx(2:3:3*(N+1),1) = -2;   % state y lower bound
+args.ubx(2:3:3*(N+1),1) = 2;    % state y upper bound
+args.lbx(3:3:3*(N+1),1) = -inf; % state theta lower bound
+args.ubx(3:3:3*(N+1),1) = inf;  % state theta upper bound
 
 % Input Constraints
 args.lbx(3*(N+1)+1:2:3*(N+1)+2*N,1) = v_min; %v lower bound
@@ -145,7 +145,7 @@ while(norm((x0-x_ref),2) > 1e-2 && mpciter < sim_time / T)
         'lbg', args.lbg, 'ubg', args.ubg,'p',args.p);
     % Extract the minimizing control
     u = reshape(full(sol.x(3*(N+1)+1:end))',2,N)'; 
-     % Get solution TRAJECTORY
+    % Get solution TRAJECTORY
     x_mpc(:,1:3,mpciter+1) = reshape(full(sol.x(1:3*(N+1)))',3,N+1)';
     % Store only the input at the first time step
     u_mpc= [u_mpc ; u(1,:)];
@@ -155,7 +155,7 @@ while(norm((x0-x_ref),2) > 1e-2 && mpciter < sim_time / T)
     [t0, x0, u0] = shift(T, t0, x0, u,f);
     % Update the state history
     st_hist(:,mpciter+2) = x0;
-    % Get solution TRAJECTORY
+    % Reshape and get solution TRAJECTORY
     X0 = reshape(full(sol.x(1:3*(N+1)))',3,N+1)'; 
     % Shift trajectory to initialize the next step
     X0 = [X0(2:end,:);X0(end,:)];
