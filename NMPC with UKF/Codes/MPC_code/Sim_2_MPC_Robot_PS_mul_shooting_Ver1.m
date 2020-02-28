@@ -113,7 +113,6 @@ args.ubx(3*(N+1)+2:2:3*(N+1)+2*N,1) = omega_max; %omega upper bound
 %----------------------------------------------
 % ALL OF THE ABOVE IS JUST A PROBLEM SET UP
 
-
 % THE SIMULATION LOOP SHOULD START FROM HERE
 %-------------------------------------------
 t0       = 0;                 % Initial time for each MPC iteration
@@ -145,17 +144,17 @@ while(norm((x0-x_ref),2) > 1e-2 && mpciter < sim_time / T)
         'lbg', args.lbg, 'ubg', args.ubg,'p',args.p);
     % Extract the minimizing control
     u = reshape(full(sol.x(3*(N+1)+1:end))',2,N)'; 
-    % Get solution TRAJECTORY
+    % Get solution TRAJECTORY    
     x_mpc(:,1:3,mpciter+1) = reshape(full(sol.x(1:3*(N+1)))',3,N+1)';
     % Store only the input at the first time step
-    u_mpc= [u_mpc ; u(1,:)];
+    u_mpc= [u_mpc ; u(1,:)];    
     % Update the time history
     time_hist(mpciter+1) = t0;
     % Apply the control and shift the solution
-    [t0, x0, u0] = shift(T, t0, x0, u,f);
+    [t0, x0, u0] = shift(T, t0, x0, u,f);    
     % Update the state history
     st_hist(:,mpciter+2) = x0;
-    % Reshape and get solution TRAJECTORY
+    % Reshape and get solution TRAJECTORY    
     X0 = reshape(full(sol.x(1:3*(N+1)))',3,N+1)'; 
     % Shift trajectory to initialize the next step
     X0 = [X0(2:end,:);X0(end,:)];
@@ -175,4 +174,4 @@ ss_error = norm((x0-x_ref),2);
 disp(['Average MPC Time = ', num2str(main_loop_time/(mpciter+1))]);
 
 % Draw the robot trajectory with MPC inputs and predictions
-Draw_MPC_point_stabilization_v2(time_hist,st_hist,x_mpc,u_mpc,x_ref,N,rDia)
+Draw_MPC_point_stabilization_v1(time_hist,st_hist,x_mpc,u_mpc,x_ref,N,rDia)
